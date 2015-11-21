@@ -3,7 +3,7 @@ import array
 
 # read measurements from Ventus W820 weather station via bluetooth 
 # (c) 2015 Christian Herzog <daduke@daduke.org>
-# project website: http://daduke.org/code/ventus.html
+# project website: http://daduke.org/coding/ventus.html
 #
 # we always provide metric units, no matter what mode the W820 is in
 # temps: degC

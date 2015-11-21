@@ -2,7 +2,7 @@
 #
 # weewx driver for Ventus W820 weather station
 # (c) 2015 Christian Herzog <daduke@daduke.org>
-# requires companion library to read the Ventus data via bluetooth: http://daduke.org/code/ventus.html
+# requires companion library to read the Ventus data via bluetooth: http://daduke.org/coding/ventus.html
 
 
 """Driver for Ventus W820 weather stations.

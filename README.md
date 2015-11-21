@@ -5,7 +5,7 @@ The Ventus W820 is a bluetooth enabled weather station. This repository provides
 
 The library requires [bluepy](https://github.com/IanHarvey/bluepy) for the BLE communication 
 
-Project website: [http://daduke.org/code/ventus.html](http://daduke.org/code/ventus.html)
+Project website: [http://daduke.org/coding/ventus.html](http://daduke.org/coding/ventus.html)
 
 How to use it:
   * install [bluepy](https://github.com/IanHarvey/bluepy)
@@ -30,3 +30,20 @@ station_type = W820
 ```
 
 that's it! Contact me if you have any questions.
+
+License
+-------
+
+> Ventus W820 bluetooth driver and weewx connector
+>
+> Copyright 2015 Christian Herzog
+>
+> This program is free software: you can redistribute it and/or modify
+> it under the terms of the GNU General Public License as published by
+> the Free Software Foundation, either version 3 of the License, or
+> (at your option) any later version.
+>
+> This program is distributed in the hope that it will be useful,
+> but WITHOUT ANY WARRANTY; without even the implied warranty of
+> MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+> GNU General Public License for more details.
