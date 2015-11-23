@@ -14,7 +14,6 @@ import array
 # wind direction: 0: N, 1: NNE ... 15: NNW
 #
 # reverse enginieered using a BLE sniffer and the Ventus Android app
-# ventus1/com/ventus/bt5066/MainActivity.java
 #
 # requires bluepy: https://github.com/IanHarvey/bluepy
 
@@ -32,9 +31,15 @@ class w820Delegate(btle.DefaultDelegate):
        data = array.array('B', data)
        if data[0] == 1:
 	       sensorData['degF'] = 0
-	       sensorData['indoorTemperature'] = ((data[5] * 256) + data[6])/10.0
+	       if data[5] < 127:	#temps come in 2's complement
+		       sensorData['indoorTemperature'] = ((data[5] * 256) + data[6])/10.0
+	       else:
+		       sensorData['outdoorTemperature'] = -(((255-data[5]) * 256) + (255-data[6]))/10.0
 	       sensorData['indoorHumidity'] = data[7]
-	       sensorData['outdoorTemperature'] = ((data[12] * 256) + data[13])/10.0
+	       if data[12] < 127:	#temps come in 2's complement
+		       sensorData['outdoorTemperature'] = ((data[12] * 256) + data[13])/10.0
+	       else:
+		       sensorData['outdoorTemperature'] = -(((255-data[12]) * 256) + (255-data[13]))/10.0
 	       sensorData['outdoorHumidity'] = data[14]
 	       if (data[1] & 2) != 0:	# degF
 		       sensorData['indoorTemperature'] = (sensorData['indoorTemperature'] - 32) / 1.8
