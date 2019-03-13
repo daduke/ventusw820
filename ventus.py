@@ -34,7 +34,7 @@ class w820Delegate(btle.DefaultDelegate):
 	       if data[5] < 127:	#temps come in 2's complement
 		       sensorData['indoorTemperature'] = ((data[5] * 256) + data[6])/10.0
 	       else:
-		       sensorData['outdoorTemperature'] = -(((255-data[5]) * 256) + (255-data[6]))/10.0
+		       sensorData['indoorTemperature'] = -(((255-data[5]) * 256) + (255-data[6]))/10.0
 	       sensorData['indoorHumidity'] = data[7]
 	       if data[12] < 127:	#temps come in 2's complement
 		       sensorData['outdoorTemperature'] = ((data[12] * 256) + data[13])/10.0
