@@ -1,4 +1,4 @@
-import btle
+import bluepy.btle as btle
 import array
 
 # read measurements from Ventus W820 weather station via bluetooth 
