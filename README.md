@@ -3,13 +3,13 @@ Ventus W820 bluetooth driver and weewx connector
 
 The Ventus W820 is a bluetooth enabled weather station. This repository provides a library to read the values of the sensors and a driver for the [weewx](http://www.weewx.com/) weather station software 
 
-The library requires [bluepy](https://github.com/IanHarvey/bluepy) for the BLE communication 
+The library requires [bluepy](https://github.com/IanHarvey/bluepy) for the BLE communication. Pick the python3 version (i.e. pip3 ...).
 
 Project website: [http://daduke.org/coding/ventus.html](http://daduke.org/coding/ventus.html)
 
 How to use it:
-  * install [bluepy](https://github.com/IanHarvey/bluepy)
-  * `ventus.py` is the low level library that talks to the weather station, copy it to a standard python library path (e.g. `/usr/local/lib/python2.7/site-packages/`
+  * install python3 version of [bluepy](https://github.com/IanHarvey/bluepy)
+  * `ventus.py` is the low level library that talks to the weather station, copy it to a standard python library path (e.g. `/usr/local/lib/python3.9/site-packages/`
   * `ventusw820.py` is the weewx driver, it goes into the weewx driver directory
   * define your Ventus station in the weewx config file:
 ```
