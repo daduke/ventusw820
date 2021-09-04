@@ -30,7 +30,7 @@ DEBUG_READ = 0
 
 
 def logmsg(level, msg):
-    syslog.syslog(level, 'w820: %s' % msg)
+    syslog.syslog(level, 'ventusw820.py: %s' % msg)
 
 def logdbg(msg):
     logmsg(syslog.LOG_DEBUG, msg)
@@ -71,31 +71,32 @@ class W820Driver(weewx.drivers.AbstractDevice):
         while True:
             data = self.station.get_readings()
             if Station.validate_data(data):
-		packet = Station.data_to_packet(data, int(time.time() + 0.5), last_rain=self._last_rain)
-		self._last_rain = packet['rainTotal']
+                packet = Station.data_to_packet(data, int(time.time() + 0.5), last_rain=self._last_rain)
+                self._last_rain = packet['rainTotal']
                 yield packet
                 time.sleep(self.polling_interval)
 
 class Station(object):
     def __init__(self, mac):
         self.mac = mac
-	self.handle = None
-	self.sensorData = {}
+        self.handle = None
+        self.sensorData = {}
 
     def get_readings(self):
-	sensorData = {}
+        sensorData = {}
         sensorData['indoorTemperature'] = None
         if self.handle is None:
             try:
-                logdbg("open bluetooth connection to MAC %s" % self.mac)
+                #JW logdbg("open bluetooth connection to MAC %s" % self.mac)
                 self.handle = ventus.connect(self.mac)
                 sensorData = ventus.read(self.handle)
+                #loginf(sensorData)
             except:
-	        e = sys.exc_info()[0]
+                e = sys.exc_info()[0]
                 loginf("could not open BLE connection: %s" % e)
-	    finally:
+            finally:
                 if self.handle is not None:
-                    logdbg("close bluetooth connection to %s" % self.mac)
+                    #JW logdbg("close bluetooth connection to %s" % self.mac)
                     ventus.disconnect(self.handle)
                     self.handle = None
                 return sensorData
@@ -106,64 +107,69 @@ class Station(object):
 #TODO
         if sensorData and sensorData['indoorTemperature'] is not None:
             return 1
-	else:
-	    return 0
+        else:
+            return 0
 
     @staticmethod
     def data_to_packet(data, ts, last_rain=None):
-	"""Convert raw data to format and units required by weewx.
+        """Convert raw data to format and units required by weewx.
 
-	  	        WS820        weewx (metric)
-	temperature     degree C     degree C
-	humidity        percent      percent
-	uv index        unitless     unitless
-	pressure        mbar/hPa     mbar
-	wind speed      km/h         km/h
-	wind dir        0..15 (N->E) degree
-	rain            mm           cm
-	"""
+                        WS820        weewx (metric)
+        temperature     degree C     degree C
+        humidity        percent      percent
+        uv index        unitless     unitless
+        pressure        mbar/hPa     mbar
+        wind speed      km/h         km/h
+        wind dir        0..15 (N->E) degree
+        rain            mm           cm
+        """
 
-	packet = dict()
-	packet['usUnits'] = weewx.METRIC
-	packet['dateTime'] = ts
-	packet['inTemp'] = data['indoorTemperature']
-	packet['inHumidity'] = data['indoorHumidity']
-	packet['outTemp'] = data['outdoorTemperature']
-	packet['outHumidity'] = data['outdoorHumidity']
-	packet['barometer'] = data['airPressure']
-	packet['outTempBatteryStatus'] = data['lowBat']
+        #JW: logdbg("data received are: %s" % data)
+        packet = dict()
+        packet['usUnits'] = weewx.METRIC
+        packet['dateTime'] = ts
+        packet['inTemp'] = data['indoorTemperature']
+        packet['inHumidity'] = data['indoorHumidity']
+        packet['outTemp'] = data['outdoorTemperature']
+        packet['outHumidity'] = data['outdoorHumidity']
+        packet['barometer'] = data['airPressure']
+        packet['outTempBatteryStatus'] = data['lowBat']
 
-	ws, wd, wso, wsv = (data['windSpeed'], data['windDirection'], 0, 0)
-	if wso == 0 and wsv == 0:
-		packet['windSpeed'] = ws
-		packet['windDir'] = wd*22.5 if packet['windSpeed'] else None
-	else:
-		loginf('invalid wind reading: speed=%s dir=%s overflow=%s invalid=%s' % (ws, wd, wso, wsv))
-		packet['windSpeed'] = None
-		packet['windDir'] = None
+        ws, wd, wso, wsv = (data['windSpeed'], data['windDirection'], 0, 0)
+        if wso == 0 and wsv == 0:
+                packet['windSpeed'] = ws
+                packet['windDir'] = wd*22.5 if packet['windSpeed'] else None
+        else:
+                loginf('invalid wind reading: speed=%s dir=%s overflow=%s invalid=%s' % (ws, wd, wso, wsv))
+                packet['windSpeed'] = None
+                packet['windDir'] = None
 
-	packet['windGust'] = None
-	packet['windGustDir'] = None
+        packet['windGust'] = None
+        packet['windGustDir'] = None
 
-	packet['rainTotal'] = data['rainTotal']
-	if packet['rainTotal'] is not None:
-		packet['rainTotal'] /= 10.0 # weewx wants cm
-	packet['rain'] = weewx.wxformulas.calculate_rain(packet['rainTotal'], last_rain)
+        packet['rainTotal'] = data['rainTotal']
+        if packet['rainTotal'] is not None:
+                packet['rainTotal'] /= 10.0 # weewx wants cm
+        packet['rain'] = weewx.wxformulas.calculate_rain(packet['rainTotal'], last_rain)
 
-	#station provides some derived variables
-#	packet['rainRate'] = data['rh']
-#	if packet['rainRate'] is not None:
-#		packet['rainRate'] /= 10 # weewx wants cm/hr
-#	packet['dewpoint'] = data['dp']
-#	packet['windchill'] = data['wc']
+        #JW: one could add UV as well
+        #packet['UV'] = data['UV']
 
-	return packet
+        #station provides some derived variables
+#       packet['rainRate'] = data['rh']
+#       if packet['rainRate'] is not None:
+#               packet['rainRate'] /= 10 # weewx wants cm/hr
+#       packet['dewpoint'] = data['dp']
+#       packet['windchill'] = data['wc']
+
+        return packet
 
 
 class W820ConfEditor(weewx.drivers.AbstractConfEditor):
     @property
     def default_stanza(self):
-        return """
+        return 
+"""
 [W820]
     # This section is for the Ventus W820 weather station.
 
@@ -175,7 +181,7 @@ class W820ConfEditor(weewx.drivers.AbstractConfEditor):
 """
 
     def prompt_for_settings(self):
-        print "Specify the MAC address of your W820 bluetooth interface"
+        print("Specify the MAC address of your W820 bluetooth interface")
         mac = self._prompt('mac', 'ff:ff:ff:ff:ff:ff')
         return {'mac': mac}
 
@@ -201,9 +207,9 @@ if __name__ == '__main__':
     (options, args) = parser.parse_args()
 
     if options.version:
-        print "Ventus W820 driver version %s" % DRIVER_VERSION
+        print("Ventus W820 driver version %s" % DRIVER_VERSION)
         exit(0)
 
     with Station(options.mac) as s:
         while True:
-            print time.time(), s.get_readings()
+            print(time.time(), s.get_readings())
