@@ -99,6 +99,8 @@ class w820Delegate(btle.DefaultDelegate):
                sensorData['windChill'] = ((data[13] * 256) + data[14])/10.0
                sensorData['windDirection'] = data[10]
                if windUnit == 0:
+                       #JW: i think this should not be changed (i.e. *=1.0), according to my observation/with my ventusw820
+                       # but keeping it as is in the PR as it is on python3 only
                        sensorData['windSpeed'] *= 0.1
                if windUnit == 1:
                        sensorData['windSpeed'] = sensorData['windSpeed'] * 0.1 * 1.60934
